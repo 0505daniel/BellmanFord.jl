@@ -16,13 +16,9 @@ function reconstructPath(graph::Graph, target::Int)
 end
 
 function modifiedBellmanFord(graph::Graph, source::Int, listType::Symbol=:fifo)
-    # for vertex in graph.vertices
-    #     vertex.dist = Inf
-    #     vertex.predecessor = 0
-    #     vertex.edgeCount = 0
-    # end
+
     graph.vertices[source].dist = 0
-    # graph.vertices[source].edgeCount = 0
+    label_count = 1
 
     list = (listType == :fifo) ? Queue{Int}() : Deque{Int}()
     if listType != :fifo
@@ -37,6 +33,7 @@ function modifiedBellmanFord(graph::Graph, source::Int, listType::Symbol=:fifo)
         else
             i = popfirst!(list)
         end
+
         for edge in graph.vertices[i].edges
             if graph.vertices[i].dist + edge.weight < graph.vertices[edge.to].dist
                 graph.vertices[edge.to].dist = graph.vertices[i].dist + edge.weight
@@ -68,7 +65,11 @@ function modifiedBellmanFord(graph::Graph, source::Int, listType::Symbol=:fifo)
                 else
                     enqueue!(list, edge.to)
                 end
+
+                label_count += 1 #TODO: Check if this is the right place to increment the label count
             end
         end
     end
+
+    return label_count
 end

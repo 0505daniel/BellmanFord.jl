@@ -4,6 +4,7 @@ include("graph.jl")
 include("algorithm.jl")
 
 struct BellmanFordResult
+    label_count::Int64
     distances::Dict{Int64, Float64}
     paths::Dict{Int64, Array{Int64, 1}}
 end
@@ -14,9 +15,9 @@ function solve_directed_graph(
     sink::Int64=None,
     listtype::Symbol=:fifo
 )
-    modifiedBellmanFord(graph, source, listtype)
+    label_count = modifiedBellmanFord(graph, source, listtype)
 
-    return graph.vertices[sink].dist, reconstructPath(graph, sink)
+    return label_count, graph.vertices[sink].dist, reconstructPath(graph, sink)
 end
 
 function solve_directed_graph(
@@ -24,7 +25,7 @@ function solve_directed_graph(
     source::Int64,
     listtype::Symbol=:fifo
 )
-    modifiedBellmanFord(graph, source, listtype)
+    label_count = modifiedBellmanFord(graph, source, listtype)
 
     distances = Dict{Int64, Float64}()
     paths = Dict{Int64, Array{Int64, 1}}()
@@ -34,5 +35,5 @@ function solve_directed_graph(
         paths[vertex] = reconstructPath(graph, vertex)
     end
 
-    return BellmanFordResult(distances, paths)
+    return BellmanFordResult(label_count, distances, paths)
 end
